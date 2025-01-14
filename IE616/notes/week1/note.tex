@@ -1,0 +1,77 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{enumitem}
+\usepackage{dsfont}
+
+\title{Week1}
+\author{Hanish Dhanwalkar}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Examples}
+
+\subsection{Duopoly}
+\[ 
+x_1(p_1, p_2)= \left\{
+  \begin{array}{lr} 
+    0 & if p_2 < p_1 \\
+    x(p_1) & if p_1 < p_2 \\
+    x(p_2)/2 & if p_1 = p_2
+    \end{array}
+\right.
+\]
+
+$max(p_1 x(p_1, p_2))$ for $p_1$
+
+\subsection{Auctions}
+values known to only agents and no sharing of information\\
+places bids \\
+highest bid wins \\
+
+model: \\
+$1, 2, 3, \dots N$ \\
+$v_1, v_2, v_3, \dots v_N \rightarrow values $\\
+$b_1, b_2, b_3, \dots b_N \rightarrow bids $\\
+
+max bidden value wins\\
+$\rightarrow b^*_1 = max(b_1, b_2, \dots b_N)$\\ 
+
+but has to pay second max bid\\
+$\hat{b^*} \rightarrow$ second best bid\\
+
+\subsection{NCG}
+$N =\{1, 2, \dots, n\}\rightarrow$ set of players \\
+$S = \{S_{i, i\in N}\}\rightarrow$ set of actions \\
+$U = \{U_{i, i\in N}\}\rightarrow$ set of utilities \\
+$U_i(a_i, a_{-i}) \forall a_i \in S_i, a_{-i} \in S_{-i} = S_1 \times S_2 \times \dots S_{i+1} \dots$\\
+
+
+For 2 players: N= 2 \\
+\[ 
+U_1(a_1, a_{-1})= \left\{
+  \begin{array}{lr} 
+    -C &  a_1 = 1 \& a_{-1} \in S_{-i}\\
+    x(p_1) &  a_1 = 2 \& a_{-1} \in S_{-i}\\
+    x(p_2)/2 &  a_2 = 2
+    \end{array}
+\right.
+\]
+
+For N players: N= N \\
+\[ 
+U_1(a_1, a_{-1})= \left\{
+  \begin{array}{lr} 
+    -C & a_1 = 1 \& a_{-1} \in S_{-i}\\
+    - \frac{n_2(a_{-i})+1}{N} & a_1 = 2 \& a_{-1} \in S_{-i} \\
+    \end{array}
+\right.
+\]
+
+\subsection{Hotelling Game}
+
+
+
+\end{document}
