@@ -2,6 +2,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage{enumitem}
 \usepackage{dsfont}
+\usepackage{amsmath}
 
 \title{Week1}
 \author{Hanish Dhanwalkar}
@@ -71,6 +72,57 @@ U_1(a_1, a_{-1})= \left\{
 \]
 
 \subsection{Hotelling Game}
+$N = \{H_1, H_2\}$ \\
+$S_1 = S_2$ \\
+
+People are lazy, will try to go to the nearest hotel
+\[ 
+U_1(a_1, a_{-1})= \left\{
+  \begin{array}{lr} 
+    \frac{a_1 + a_{-1}}{2} & a_1 <a_{-1} \\
+    0 & a_1 = a_{-1} \\
+    L - \frac{a_1 + a_{-1}}{2} & a_1 > a_{-1}
+
+    \end{array}
+\right.
+\]
+
+\begin{itemize}[itemsep=0pt,parsep=0pt,topsep=0pt]
+  \item Order of decisions
+  \item Best Response
+\end{itemize}
+
+
+BR $\rightarrow$ BEST Response \\
+$BR_i(a_{-i}) = \underset{a_i}{arg \max} \ U_i(a_i, a_{-i})$
+
+
+Situations where players dont know each others actions\\
+Best strategy is to anticiapate ie assume $a_{-i} = \tilde{a}$\\
+Then, play $BR_i = BR_i(\tilde{a})$ \\
+
+
+\subsection{Free Riding}
+
+\begin{itemize}[itemsep=0pt,parsep=0pt,topsep=0pt]
+  \item Simultaneous move games (assumption)
+\end{itemize}
+
+eg. N people in area, decide whether to participate in a cleaniong activity or not\\
+
+
+\begin{itemize}[itemsep=0pt,parsep=0pt,topsep=0pt]
+  \item $n_p$ participates
+  \item Every person who participates gets a negative utility of $-v$
+  \item Everybody in area gets positive reward of $g(n_p)$
+\end{itemize}
+ 
+Num of people participated, \\
+$n_p(a_{-i}) = \sum_{j != i}^{N} 1_{a_j = 1} = \sum_{j!=i} a_j$ \\
+
+Utility:\\
+$U_1(a_i, a_{-i}) = -a_i . v + g(n_p(a_{-i}) + a_i)$
+
 
 
 
