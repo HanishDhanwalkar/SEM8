@@ -1,4 +1,7 @@
 ./IE616/books/*
-./IE616/notes/week1/*.log
-./IE616/notes/week1/*.aux
-./IE616/notes/week1/*.gz
+
+./IE616/notes/week1/note.log
+./IE616/notes/week1/note.aux
+
+./CS747/cs747s2025-undertaking-output.pdf
+
