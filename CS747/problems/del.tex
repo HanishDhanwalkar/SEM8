@@ -1,0 +1,67 @@
+\documentclass{article}
+
+\usepackage{amsmath}
+
+\begin{document}
+
+Problem: UCB and KL-UCB for Bernoulli Bandits, \\
+prove that if $0 < \delta(t) \le \delta'(t)$, then $ucb_a^t \le ucb_a^{kl,t}$ for any number of pulls $u_a^t$ and empirical mean $\hat{p}_a^t$
+
+\textbf{Solution:} \\
+Given,  \\
+UCB: \\
+\begin{equation*}
+    ucb_a^t = \hat{p}_a^t + \sqrt{\frac{1}{2u_a^t}\ln(\frac{1}{\delta(t)})}
+\end{equation*}
+
+KL-UCB: \\
+\begin{equation*}
+    ucb_a^{kl,t} = argmax_{q \in [0, 1]} {u_a^t KL(\hat{p}_a^t, q) = \ln(\frac{1}{\delta'(t)})}
+\end{equation*}
+
+where, $\delta'(t) = 1/(t{\ln t}^c)$ for $c \ge 3$ \\
+
+To Prove: \\
+if $0 \le \delta'(t) \rq \le \delta(t)$ then $ucb_a^t \le ucb_a^{kl,t}$ \\
+for any number of pulls $ucb_a^t$ and empirical mean $\hat{p}_a^t$ \\
+
+Proof: \\
+\begin{equation*}
+    u_a^t KL(\hat{p}_a^t, ucb_a^{kl,t}) = \ln(\frac{1}{\delta'(t)})
+\end{equation*}
+
+Using Pinsker's Inequality [$KL(x, y) \ge 2{(x - y)}^2$],
+
+    \begin{align*}
+        u_a^t * 2{(\hat{p}_a^t - ucb_a^{kl,t})}^2 &\le u_a^t KL(\hat{p}_a^t, ucb_a^{kl,t}) = \ln{\frac{1}{\delta'(t)}}\\
+        (\hat{p}_a^t - ucb_a^{kl,t})^2 &\le \frac{1}{2u_a^t} \ln(\frac{1}{\delta'(t)}) \\
+        |{\hat{p}_a^t - ucb_a^{kl,t}}| &\le \sqrt{\frac{1}{2u_a^t} \ln(\frac{1}{\delta'(t)})}
+    \end{align*}
+
+\begin{itemize}
+    \item {Consider case 1, $\hat{p}_a^t \ge ucb_a^{kl,t}$:   
+            \begin{align*}
+                \hat{p}_a^t - ucb_a^{kl,t} &\le \sqrt{\frac{1}{2u_a^t} ln(\frac{1}{\delta'(t)})}\\
+                ucb_a^{kl,t} &\ge \hat{p}_a^t - \sqrt{\frac{1}{2u_a^t} ln(\frac{1}{\delta'(t)})}\\
+            \end{align*}
+        Since $0 < \delta(t) \le \delta'(t)$,\\
+        $\ln(\frac{1}{\delta(t)}) \le \ln(\frac{1}{\delta'(t)})$ \\
+        Therefore, \\
+        $ucb_a^{kl,t} \ge \hat{p}_a^t - \sqrt{\frac{1}{2u_a^t} ln(\frac{1}{\delta(t)})} = ucb_a^t$ \\
+        }
+    \item {Consider case 2, $\hat{p}_a^t < ucb_a^{kl,t}$:   
+            \begin{align*}
+                ucb_a^{kl,t} - \hat{p}_a^t &\le \sqrt{\frac{1}{2u_a^t} ln(\frac{1}{\delta'(t)})} \\
+                ucb_a^{kl,t} &\le \hat{p}_a^t + \sqrt{\frac{1}{2u_a^t} ln(\frac{1}{\delta'(t)})} \le \hat{p}_a^t + \sqrt{\frac{1}{2u_a^t} ln(\frac{1}{\delta(t)})} = ucb_a^t
+            \end{align*}
+        Since $0 < \delta(t) \le \delta'(t)$,\\
+        $\ln(\frac{1}{\delta(t)}) \le \ln(\frac{1}{\delta'(t)})$ \\
+        Therefore, \\
+        $ucb_a^{kl,t} \ge \hat{p}_a^t - \sqrt{\frac{1}{2u_a^t} ln(\frac{1}{\delta(t)})} = ucb_a^t$ \\
+        }
+\end{itemize}
+In both cases, we have shown that $ucb_a^t \le ucb_a^{kl,t}$
+
+    
+
+\end{document}
