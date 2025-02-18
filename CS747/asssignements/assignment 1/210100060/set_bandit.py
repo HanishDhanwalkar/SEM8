@@ -10,13 +10,14 @@ class CostlySetBandit:
     self.__net_reward = 0
 
   def pull(self, arm_set):
-    index = np.random.choice(arm_set)
+    actual_set = list(set(arm_set))
+    index = np.random.choice(actual_set)
     reward = self.__arms[index].pull()
-    self.__net_reward += reward - 1/len(arm_set)
+    self.__net_reward += reward - 1/len(actual_set)
     return reward, index
 
   def net_reward(self):
-    return self.__net_reward
+    return self.__net_reward 
   
   def num_arms(self):
     return len(self.__arms)

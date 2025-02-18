@@ -88,7 +88,7 @@ if __name__ == '__main__':
     
     if args.task == '2' or args.task == 'all':
         print("="*18+" Task 2 "+"="*18)
-        for i in range(1, 6):
+        for i in range(1, 9):
             print(f"Testcase {i}")
             score, reward = grade_task2(f'testcases/task2-{i}.txt')
             print("Costly Set Bandit Algorithm: {}. Net Reward: {:.2f}".format(pass_fail[score], reward))
