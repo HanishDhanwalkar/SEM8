@@ -1,0 +1,512 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+\begin{document}
+
+\title{Assignment 7}
+\date{}
+\maketitle
+
+\section{Solution 1:}
+
+The given system equation is:
+\[
+2\ddot{x} + \dot{x} = F(t)
+\]
+
+We want to design a PD controller:
+\[
+F(t) = K_p e(t) + K_d \dot{e}(t)
+\]
+where $e(t) = x_d(t) - x(t)$.
+
+Substituting the PD controller into the system equation:
+\[
+2\ddot{x} + \dot{x} = K_p (x_d - x) + K_d (\dot{x}_d - \dot{x})
+\]
+\[
+2\ddot{x} + (1 + K_d)\dot{x} + K_p x = K_p x_d + K_d \dot{x}_d
+\]
+
+The characteristic equation of the closed-loop system is:
+\[
+2s^2 + (1 + K_d)s + K_p = 0
+\]
+
+Comparing this with the standard second-order system characteristic equation:
+\[
+s^2 + 2\zeta\omega_n s + \omega_n^2 = 0
+\]
+We have:
+\[
+\omega_n^2 = \frac{K_p}{2} \implies K_p = 2\omega_n^2
+\]
+\[
+2\zeta\omega_n = \frac{1 + K_d}{2} \implies K_d = 4\zeta\omega_n - 1
+\]
+
+Given constraints: $\omega_n < 10$ rad/s and $\zeta > 0.707$
+
+Let's choose $\omega_n = 5$ rad/s and $\zeta = 1$ (critically damped, which satisfies $\zeta > 0.707$).
+
+Then:
+\[
+K_p = 2 (5^2) = 50
+\]
+\[
+K_d = 4 (1) (5) - 1 = 19
+\]
+
+Therefore, the PD controller is:
+\[
+F(t) = 50 e(t) + 19 \dot{e}(t)
+\]
+
+\section{Solution 2:}
+
+\subsection{Part (a)}
+
+the equations can be written in the form $u_1 = f_1(\ddot{\mathbf{y}}, \dot{\mathbf{y}}, \mathbf{y})$ and $u_2 = f_2(\ddot{\mathbf{y}}, \dot{\mathbf{y}}, \mathbf{y})$. We can rearrange the given equations to isolate $u_1$ and $u_2$.
+
+\[
+u_1 = \ddot{y}_1 + 3y_1\dot{y}_2 + y_2^2 - y_2 u_2
+\]
+
+\[
+u_2 = \ddot{y}_2 + (\cos y_1)\dot{y}_2 + 3(y_1 - y_2) + (\cos y_1)^2 y_2 u_1
+\]
+
+Substituting the expression for $u_1$ into the equation for $u_2$:
+\[
+u_2 = \ddot{y}_2 + (\cos y_1)\dot{y}_2 + 3(y_1 - y_2) + (\cos y_1)^2 y_2 (\ddot{y}_1 + 3y_1\dot{y}_2 + y_2^2 - y_2 u_2)
+\]
+\[
+u_2 [1 + (\cos y_1)^2 y_2^2] = \ddot{y}_2 + (\cos y_1)\dot{y}_2 + 3(y_1 - y_2) + (\cos y_1)^2 y_2 (\ddot{y}_1 + 3y_1\dot{y}_2 + y_2^2)
+\]
+\[
+u_2 = \frac{\ddot{y}_2 + (\cos y_1)\dot{y}_2 + 3(y_1 - y_2) + (\cos y_1)^2 y_2 (\ddot{y}_1 + 3y_1\dot{y}_2 + y_2^2)}{1 + (\cos y_1)^2 y_2^2}
+\]
+
+substitute the expression for $u_2$ back into the equation for $u_1$:
+\[
+u_1 = \ddot{y}_1 + 3y_1\dot{y}_2 + y_2^2 - y_2 \left[ \frac{\ddot{y}_2 + (\cos y_1)\dot{y}_2 + 3(y_1 - y_2) + (\cos y_1)^2 y_2 (\ddot{y}_1 + 3y_1\dot{y}_2 + y_2^2)}{1 + (\cos y_1)^2 y_2^2} \right]
+\]
+
+Thus, $u_1 = f_1(\ddot{y}_1, \ddot{y}_2, \dot{y}_1, \dot{y}_2, y_1, y_2)$ and $u_2 = f_2(\ddot{y}_1, \ddot{y}_2, \dot{y}_1, \dot{y}_2, y_1, y_2)$.
+
+\subsection{Part (b)}
+
+To find an inverse dynamics control, 
+
+\begin{align}
+\ddot{y}_1 &= -3y_1\dot{y}_2 - y_2^2 + u_1 + y_2 u_2 \\
+\ddot{y}_2 &= -(\cos y_1)\dot{y}_2 - 3(y_1 - y_2) + u_2 - (\cos y_1)^2 y_2 u_1
+\end{align}
+
+\[
+\begin{bmatrix} \ddot{y}_1 \\ \ddot{y}_2 \end{bmatrix} = \begin{bmatrix} -3y_1\dot{y}_2 - y_2^2 \\ -(\cos y_1)\dot{y}_2 - 3(y_1 - y_2) \end{bmatrix} + \begin{bmatrix} 1 & y_2 \\ -(\cos y_1)^2 y_2 & 1 \end{bmatrix} \begin{bmatrix} u_1 \\ u_2 \end{bmatrix}
+\]
+
+find $u_1$ and $u_2$ such that the closed-loop system is linear and decoupled:
+\begin{align}
+\ddot{y}_1 &= \nu_1 \\
+\ddot{y}_2 &= \nu_2
+\end{align}
+
+\begin{align}
+\ddot{y}_1 + 2\zeta\omega_n \dot{e}_1 + \omega_n^2 e_1 &= 0 \\
+\ddot{y}_2 + 2\zeta\omega_n \dot{e}_2 + \omega_n^2 e_2 &= 0
+\end{align}
+where $e_1 = y_{1d} - y_1$, $e_2 = y_{2d} - y_2$, and $y_{1d}$ and $y_{2d}$ are the desired trajectories.
+
+\begin{align}
+\nu_1 &= \ddot{y}_{1d} + 2\zeta\omega_n (\dot{y}_{1d} - \dot{y}_1) + \omega_n^2 (y_{1d} - y_1) \\
+\nu_2 &= \ddot{y}_{2d} + 2\zeta\omega_n (\dot{y}_{2d} - \dot{y}_2) + \omega_n^2 (y_{2d} - y_2)
+\end{align}
+
+\[
+\begin{bmatrix} \nu_1 \\ \nu_2 \end{bmatrix} = \begin{bmatrix} \ddot{y}_1 \\ \ddot{y}_2 \end{bmatrix} = \begin{bmatrix} -3y_1\dot{y}_2 - y_2^2 \\ -(\cos y_1)\dot{y}_2 - 3(y_1 - y_2) \end{bmatrix} + \begin{bmatrix} 1 & y_2 \\ -(\cos y_1)^2 y_2 & 1 \end{bmatrix} \begin{bmatrix} u_1 \\ u_2 \end{bmatrix}
+\]
+
+Inverting the matrix
+\[
+\begin{bmatrix} u_1 \\ u_2 \end{bmatrix} = \begin{bmatrix} 1 & y_2 \\ -(\cos y_1)^2 y_2 & 1 \end{bmatrix}^{-1} \left( \begin{bmatrix} \nu_1 \\ \nu_2 \end{bmatrix} - \begin{bmatrix} -3y_1\dot{y}_2 - y_2^2 \\ -(\cos y_1)\dot{y}_2 - 3(y_1 - y_2) \end{bmatrix} \right)
+\]
+
+The inverse of the matrix is
+\[
+\begin{bmatrix} 1 & y_2 \\ -(\cos y_1)^2 y_2 & 1 \end{bmatrix}^{-1} = \frac{1}{1 + y_2^2 (\cos y_1)^2} \begin{bmatrix} 1 & -y_2 \\ (\cos y_1)^2 y_2 & 1 \end{bmatrix}
+\]
+
+for $\omega_n = 10$ and $\zeta = 0.5$, => $u_1$ and $u_2$.
+
+\section{Solution 3:}
+
+Kinetic Energy (T): $T_1 = \frac{1}{2}I_1\dot{\theta}^2$, where $I_1$ is the moment of inertia of link 1 about the joint. \\
+Potential Energy (V): $V = m_1 g h_1 + m_2 g h_2 + m_3 g h_3$, where $h_i$ is the height of the center of mass of link $i$.\\
+Lagrangian (L): The Lagrangian is defined as $L = T - V$. \\
+Equation of Motion: Using the Euler-Lagrange equation:
+    \[
+    \frac{d}{dt}\left(\frac{\partial L}{\partial \dot{\theta}}\right) - \frac{\partial L}{\partial \theta} = \tau
+    \]
+    Substituting the expressions for $T$ and $V$ into the Lagrangian and then into the Euler-Lagrange equation, we will obtain the equation of motion in the form:
+    \[
+    \tau = I\ddot{\theta} + B\dot{\theta} + G(\theta)
+    \]
+
+2. Design a Critically Damped PD Controller
+
+We want to design a PD controller:
+\[
+\tau = K_p (\theta_d - \theta) + K_d (\dot{\theta}_d - \dot{\theta})
+\]
+
+$\dot{\theta}_d = 0$ and $\ddot{\theta}_d = 0$.  
+\[
+\tau = K_p (\theta_d - \theta) - K_d \dot{\theta}
+\]
+
+\[
+I\ddot{\theta} = K_p (\theta_d - \theta) - K_d \dot{\theta} + G(\theta)
+\]
+\[
+I\ddot{\theta} + K_d \dot{\theta} + K_p \theta = K_p \theta_d + G(\theta)
+\]
+
+The characteristic equation is:
+\[
+Is^2 + K_d s + K_p = 0
+\]
+Dividing by $I$:
+\[
+s^2 + \frac{K_d}{I} s + \frac{K_p}{I} = 0
+\]
+
+Comparing this with the standard second-order system characteristic equation
+\[
+s^2 + 2\zeta\omega_n s + \omega_n^2 = 0
+\]
+
+\[
+\omega_n^2 = \frac{K_p}{I} \implies K_p = I\omega_n^2
+\]
+\[
+2\zeta\omega_n = \frac{K_d}{I} \implies K_d = 2\zeta\omega_n I
+\]
+
+Given: $\omega_n = 4$ rad/s and critically damped, so $\zeta = 1$.
+
+\[
+K_p = I (4^2) = 16I
+\]
+\[
+K_d = 2 (1) (4) I = 8I
+\]
+
+The PD controller:
+\[
+\tau = 16I (\theta_d - \theta) - 8I \dot{\theta}
+\]
+
+
+\section*{Solution 4}
+
+\subsection*{Part (a): Dynamic Equations}
+\[
+T = \frac{1}{2}m l^2 \dot{\theta}_1^2 + \frac{1}{2}m (l^2 \dot{\theta}_1^2 + l^2 \dot{\theta}_2^2 + 2l^2 \dot{\theta}_1 \dot{\theta}_2 \cos \theta_2) + J_0 (\dot{\theta}_1 r)^2 + J_0 (\dot{\theta}_2 r)^2
+\]
+
+\[
+V = mgl\cos\theta_1 + mgl\cos(\theta_1 + \theta_2)
+\]
+
+Applying the Euler-Lagrange equations:
+
+\[
+\frac{d}{dt}\left(\frac{\partial T}{\partial \dot{\theta}_i}\right) - \frac{\partial T}{\partial \theta_i} + \frac{\partial V}{\partial \theta_i} = \tau_i
+\]
+
+
+\[
+\tau_1 = (2ml^2 + J_0 r^2)\ddot{\theta}_1 + ml^2 \cos\theta_2 \ddot{\theta}_2 - ml^2 \sin\theta_2 \dot{\theta}_2^2 - 2ml^2 \sin\theta_2 \dot{\theta}_1 \dot{\theta}_2 + mgl\sin\theta_1 + mgl\sin(\theta_1 + \theta_2) + B_0 r \dot{\theta}_1
+\]
+
+\[
+\tau_2 = ml^2 \cos\theta_2 \ddot{\theta}_1 + (ml^2 + J_0 r^2)\ddot{\theta}_2 + ml^2 \sin\theta_2 \dot{\theta}_1^2 + mgl\sin(\theta_1 + \theta_2) + B_0 r \dot{\theta}_2
+\]
+
+\subsection*{Part (b): Joint Trajectories for Circular Motion}
+
+The end-effector position is given by:
+
+\[
+x = l\cos\theta_1 + l\cos(\theta_1 + \theta_2)
+\]
+\[
+y = l\sin\theta_1 + l\sin(\theta_1 + \theta_2)
+\]
+
+\[
+x = R\cos(vt) = \frac{3l}{2}\cos(10\pi t)
+\]
+\[
+y = R\sin(vt) = \frac{3l}{2}\sin(10\pi t)
+\]
+
+
+\subsection*{Part (c): PD Trajectory Tracking Controller}
+
+The PD controller for each joint is:
+
+\[
+\tau_i = K_{p_i} (\theta_{id} - \theta_i) + K_{d_i} (\dot{\theta}_{id} - \dot{\theta}_i)
+\]
+
+
+\[
+2ml^2 \ddot{\theta}_1 + K_{d_1} \dot{\theta}_1 + K_{p_1} \theta_1 = K_{p_1} \theta_{1d} + ml^2 \cos\theta_2 \ddot{\theta}_2 - ml^2 \sin\theta_2 \dot{\theta}_2^2 - 2ml^2 \sin\theta_2 \dot{\theta}_1 \dot{\theta}_2 + mgl\sin\theta_1 + mgl\sin(\theta_1 + \theta_2)
+\]
+
+\[
+ml^2 \ddot{\theta}_2 + K_{d_2} \dot{\theta}_2 + K_{p_2} \theta_2 = K_{p_2} \theta_{2d} + ml^2 \cos\theta_2 \ddot{\theta}_1 + ml^2 \sin\theta_1 \dot{\theta}_1^2 + mgl\sin(\theta_1 + \theta_2)
+\]
+
+For critical damping 
+\[
+K_{p_i} = I_i \omega_n^2
+\]
+\[
+K_{d_i} = 2 \zeta \omega_n I_i = 2 \omega_n I_i
+\]
+
+\[
+K_{p_1} = 2ml^2 (36^2) = 2592 ml^2
+\]
+\[
+K_{d_1} = 2 (36) (2ml^2) = 144 ml^2
+\]
+\[
+K_{p_2} = ml^2 (36^2) = 1296 ml^2
+\]
+\[
+K_{d_2} = 2 (36) (ml^2) = 72 ml^2
+\]
+
+\subsection*{Part (d): Steady State Error with Disturbance Torque}
+
+With a disturbance torque <span class="math-inline">\\tau\_d</span> on joint 1, the closed-loop equation for joint 1 becomes:
+
+\[
+2ml^2 \ddot{\theta}_1 + K_{d_1} \dot{\theta}_1 + K_{p_1} \theta_1 = K_{p_1} \theta_{1d} + \tau_d
+\]
+
+At steady state, <span class="math-inline">\\ddot\{\\theta\}\_1 \= \\dot\{\\theta\}\_1 \= 0</span>, so:
+
+\[
+K_{p_1} \theta_1 = K_{p_1} \theta_{1d} + \tau_d
+\]
+
+The steady-state error is:
+
+\[
+e_{ss} = \theta_{1d} - \theta_1 = -\frac{\tau_d}{K_{p_1}} = -\frac{\tau_d}{2592 ml^2}
+\]
+
+
+\section*{Solution 5}
+
+(a) Homogeneous Transformation Matrices ${}^{0}_{C_1}T$ and ${}^{0}_{C_2}T$
+
+Let $q_1 = \theta_1$ and $q_2 = \theta_2$.
+
+\[
+{}^{0}_{C_1}T = \begin{bmatrix} \cos\theta_1 & -\sin\theta_1 & 0 & \frac{L_1}{2} \cos\theta_1 \\ \sin\theta_1 & \cos\theta_1 & 0 & \frac{L_1}{2} \sin\theta_1 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix}
+\]
+
+\[
+{}^{0}_{C_2}T = \begin{bmatrix} \cos(\theta_1 + \theta_2) & -\sin(\theta_1 + \theta_2) & 0 & L_1 \cos\theta_1 + \frac{L_2}{2} \cos(\theta_1 + \theta_2) \\ \sin(\theta_1 + \theta_2) & \cos(\theta_1 + \theta_2) & 0 & L_1 \sin\theta_1 + \frac{L_2}{2} \sin(\theta_1 + \theta_2) \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix}
+\]
+
+(b) Jacobians ${}^0 J_{v1}$ and ${}^0 J_{v2}$
+
+\[
+{}^0 J_{v1} = \begin{bmatrix} -\frac{L_1}{2} \sin\theta_1 & 0 \\ \frac{L_1}{2} \cos\theta_1 & 0 \\ 0 & 0 \end{bmatrix}
+\]
+
+\[
+{}^0 J_{v2} = \begin{bmatrix} -L_1 \sin\theta_1 - \frac{L_2}{2} \sin(\theta_1 + \theta_2) & -\frac{L_2}{2} \sin(\theta_1 + \theta_2) \\ L_1 \cos\theta_1 + \frac{L_2}{2} \cos(\theta_1 + \theta_2) & \frac{L_2}{2} \cos(\theta_1 + \theta_2) \\ 0 & 0 \end{bmatrix}
+\]
+
+(c) Angular Velocity Jacobians ${}^{c1} J_{\omega 1}$ and ${}^{c2} J_{\omega 2}$
+
+\[
+{}^{c1} J_{\omega 1} = \begin{bmatrix} 0 & 0 \\ 0 & 0 \\ 1 & 0 \end{bmatrix}
+\]
+
+\[
+{}^{c2} J_{\omega 2} = \begin{bmatrix} 0 & 0 \\ 0 & 0 \\ 0 & 1 \end{bmatrix}
+\]
+
+(d) Inertia Tensors $I_{c1}$ and $I_{c2}$
+
+For a bar of uniform density with square cross-section:
+
+\[
+I_{c1} = \begin{bmatrix} \frac{1}{12}m_1(L_1^2 + h^2) & 0 & 0 \\ 0 & \frac{1}{12}m_1(L_1^2 + h^2) & 0 \\ 0 & 0 & \frac{1}{12}m_1(L_1^2 + h^2) \end{bmatrix}
+\]
+
+\[
+I_{c2} = \begin{bmatrix} \frac{1}{12}m_2(L_2^2 + h^2) & 0 & 0 \\ 0 & \frac{1}{12}m_2(L_2^2 + h^2) & 0 \\ 0 & 0 & \frac{1}{12}m_2(L_2^2 + h^2) \end{bmatrix}
+\]
+
+(e) Inertia Matrix $D(q)$
+
+\[
+D(q) = m_1 J_{v1}^T J_{v1} + m_2 J_{v2}^T J_{v2} + J_{\omega 1}^T I_{c1} J_{\omega 1} + J_{\omega 2}^T I_{c2} J_{\omega 2}
+\]
+
+\[
+D(q) = \begin{bmatrix}
+    \frac{1}{4}m_1 L_1^2 + m_2(L_1^2 + L_1 L_2 \cos\theta_2 + \frac{1}{4}L_2^2) + \frac{1}{12}m_1(L_1^2 + h^2) & m_2(\frac{1}{2}L_1 L_2 \cos\theta_2 + \frac{1}{4}L_2^2) \\
+    m_2(\frac{1}{2}L_1 L_2 \cos\theta_2 + \frac{1}{4}L_2^2) & \frac{1}{4}m_2 L_2^2 + \frac{1}{12}m_2(L_2^2 + h^2)
+\end{bmatrix}
+\]
+
+(f) Equations of Motion
+
+\[
+\tau = D(q) \ddot{q} + C(q, \dot{q}) \dot{q} + G(q)
+\]
+
+Calculating $C(q, \dot{q})$ and $G(q)$:
+
+\[
+C(q, \dot{q}) = \begin{bmatrix}
+    -m_2 L_1 L_2 \sin\theta_2 \dot{\theta}_2 & -m_2 L_1 L_2 \sin\theta_2 (\dot{\theta}_1 + \dot{\theta}_2) \\
+    m_2 L_1 L_2 \sin\theta_2 \dot{\theta}_1 & 0
+\end{bmatrix}
+\]
+
+\[
+G(q) = \begin{bmatrix}
+    \frac{1}{2} m_1 g L_1 \cos\theta_1 + m_2 g (L_1 \cos\theta_1 + \frac{1}{2} L_2 \cos(\theta_1 + \theta_2)) \\
+    \frac{1}{2} m_2 g L_2 \cos(\theta_1 + \theta_2)
+\end{bmatrix}
+\]
+
+
+\[
+\tau_1 = D_{11} \ddot{\theta}_1 + D_{12} \ddot{\theta}_2 - m_2 L_1 L_2 \sin\theta_2 \dot{\theta}_2 \dot{\theta}_1 - m_2 L_1 L_2 \sin\theta_2 \dot{\theta}_2^2 + \frac{1}{2} m_1 g L_1 \cos\theta_1 + m_2 g (L_1 \cos\theta_1 + \frac{1}{2} L_2 \cos(\theta_1 + \theta_2))
+\]
+
+\[
+\tau_2 = D_{21} \ddot{\theta}_1 + D_{22} \ddot{\theta}_2 + m_2 L_1 L_2 \sin\theta_2 \dot{\theta}_1^2 + \frac{1}{2} m_2 g L_2 \cos(\theta_1 + \theta_2)
+\]
+
+
+\[
+x_d(t) = R \cos(\omega t)
+\]
+\[
+y_d(t) = R \sin(\omega t)
+\]
+\[
+z_d(t) = pt
+\]
+
+where $R$ is the radius of the helix and $\omega = v / R$ is the angular velocity.
+
+\[
+\tau = D(q) \ddot{q}_{des} + C(q, \dot{q}) \dot{q}_{des} + G(q)
+\]
+
+
+\section*{Solution to Question 6}
+
+\subsection*{Part a) Task Space Dynamic Equations}
+
+
+\[
+x = l_1 \cos q_1 + l_2 \cos(q_1 + q_2)
+\]
+\[
+y = l_1 \sin q_1 + l_2 \sin(q_1 + q_2)
+\]
+
+\[
+\dot{x} = J(q) \dot{q}
+\]
+
+\[
+J(q) = \begin{bmatrix} -l_1 \sin q_1 - l_2 \sin(q_1 + q_2) & -l_2 \sin(q_1 + q_2) \\ l_1 \cos q_1 + l_2 \cos(q_1 + q_2) & l_2 \cos(q_1 + q_2) \end{bmatrix}
+\]
+
+The dynamic equations in joint space are generally of the form:
+
+\[
+\tau = D(q) \ddot{q} + C(q, \dot{q}) \dot{q} + G(q)
+\]
+
+    \[
+    \ddot{x} = \dot{J}(q) \dot{q} + J(q) \ddot{q}
+    \]
+    \[
+    \ddot{q} = J^{-1}(q) (\ddot{x} - \dot{J}(q) \dot{q})
+    \]
+
+    \[
+    \tau = D(q) J^{-1}(q) (\ddot{x} - \dot{J}(q) \dot{q}) + C(q, \dot{q}) \dot{q} + G(q)
+    \]
+
+    \[
+    J^{-T}(q) \tau = J^{-T}(q) D(q) J^{-1}(q) \ddot{x} - J^{-T}(q) D(q) J^{-1}(q) \dot{J}(q) \dot{q} + J^{-T}(q) C(q, \dot{q}) \dot{q} + J^{-T}(q) G(q)
+    \]
+
+
+    \[
+    J^{-T}(q) \tau = J^{-T}(q) D(q) J^{-1}(q) \ddot{x} - J^{-T}(q) D(q) J^{-1}(q) \dot{J}(q) J^{-1}(q) \dot{x} + J^{-T}(q) C(q, \dot{q}) J^{-1}(q) \dot{x} + J^{-T}(q) G(q)
+    \]
+
+5.  Simplified Task Space Dynamics: The dynamic equations in task space can be written as:
+
+    \[
+    F = \Lambda(q) \ddot{x} + \mu(q, \dot{q}) + p(q)
+    \]
+
+
+\subsection*{Part b Task-Space Nonlinear Decoupling PD Controller}
+
+\[
+F = \Lambda(q) (\ddot{x}_d + K_v \dot{e} + K_p e) + \mu(q, \dot{q}) + p(q)
+\]
+
+\[
+\tau = J^{T}(q) \left[ \Lambda(q) (\ddot{x}_d + K_v \dot{e} + K_p e) + \mu(q, \dot{q}) + p(q) \right]
+\]
+
+\[
+K_p = \begin{bmatrix} k_{p1} & 0 \\ 0 & k_{p2} \end{bmatrix}, \quad K_v = \begin{bmatrix} k_{v1} & 0 \\ 0 & k_{v2} \end{bmatrix}
+\]
+
+For critical damping 
+\[
+k_{p_i} = \omega_n^2 = 36^2 = 1296
+\]
+\[
+k_{v_i} = 2 \zeta \omega_n = 2 \times 1 \times 36 = 72
+\]
+
+So,
+\[
+K_p = \begin{bmatrix} 1296 & 0 \\ 0 & 1296 \end{bmatrix}, \quad K_v = \begin{bmatrix} 72 & 0 \\ 0 & 72 \end{bmatrix}
+\]
+
+The final control law is:
+
+\[
+\tau = J^{T}(q) \left[ \Lambda(q) (\ddot{x}_d + \begin{bmatrix} 72 & 0 \\ 0 & 72 \end{bmatrix} \dot{e} + \begin{bmatrix} 1296 & 0 \\ 0 & 1296 \end{bmatrix} e) + \mu(q, \dot{q}) + p(q) \right]
+\]
+
+\end{document}

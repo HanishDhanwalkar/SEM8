@@ -1,0 +1,415 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\geometry{a4paper, margin=1in}
+
+\begin{document}
+
+\title{Engineering Control Systems - Assignment 7}
+\author{}
+\date{}
+\maketitle
+
+\section{Exercise 1: Second-Order System Control}
+
+\textbf{Problem Statement:} Design a proportional-derivative (PD) controller for the given second-order system:
+\[
+2\ddot{x} + \dot{x} = F(t)
+\]
+
+\textbf{Required:} Determine controller gains $K_p$ and $K_d$ to achieve critical damping, satisfying $\omega_n < 10$ rad/s and $\zeta > 0.707$.
+
+\subsection*{Method and Solution}
+
+We implement a PD controller with error $e(t) = x_d(t) - x(t)$:
+\[
+F(t) = K_p e(t) + K_d \dot{e}(t)
+\]
+
+Integrating this control law into our system:
+\[
+2\ddot{x} + \dot{x} = K_p (x_d - x) + K_d (\dot{x}_d - \dot{x})
+\]
+
+After rearrangement:
+\[
+2\ddot{x} + (1 + K_d)\dot{x} + K_p x = K_p x_d + K_d \dot{x}_d
+\]
+
+This yields the characteristic equation:
+\[
+2s^2 + (1 + K_d)s + K_p = 0
+\]
+
+Comparing with the standard form $s^2 + 2\zeta\omega_n s + \omega_n^2 = 0$, we establish:
+\[
+\omega_n^2 = \frac{K_p}{2} \quad \text{and} \quad 2\zeta\omega_n = \frac{1 + K_d}{2}
+\]
+
+Therefore:
+\[
+K_p = 2\omega_n^2 \quad \text{and} \quad K_d = 4\zeta\omega_n - 1
+\]
+
+To satisfy our design requirements, we select $\omega_n = 5$ rad/s and $\zeta = 1$ (critically damped), yielding:
+\[
+K_p = 2(5^2) = 50 \quad \text{and} \quad K_d = 4(1)(5) - 1 = 19
+\]
+
+\textbf{Final Controller:} $F(t) = 50e(t) + 19\dot{e}(t)$
+
+\section{Exercise 2: Nonlinear System Analysis}
+
+\textbf{Problem Statement:} Analyze and develop a control strategy for the given nonlinear system.
+
+\subsection*{Part A: Control Input Expressions}
+
+The nonlinear system is described by these interconnected equations:
+\begin{align}
+u_1 &= \ddot{y}_1 + 3y_1\dot{y}_2 + y_2^2 - y_2 u_2 \\
+u_2 &= \ddot{y}_2 + (\cos y_1)\dot{y}_2 + 3(y_1 - y_2) + (\cos y_1)^2 y_2 u_1
+\end{align}
+
+We need to express inputs $u_1$ and $u_2$ explicitly in terms of state variables and their derivatives.
+
+First, substituting the $u_1$ expression into the $u_2$ equation:
+\begin{align}
+u_2 &= \ddot{y}_2 + (\cos y_1)\dot{y}_2 + 3(y_1 - y_2) \\
+&+ (\cos y_1)^2 y_2 (\ddot{y}_1 + 3y_1\dot{y}_2 + y_2^2 - y_2 u_2)
+\end{align}
+
+Collecting $u_2$ terms:
+\[
+u_2[1 + (\cos y_1)^2 y_2^2] = \ddot{y}_2 + (\cos y_1)\dot{y}_2 + 3(y_1 - y_2) + (\cos y_1)^2 y_2 (\ddot{y}_1 + 3y_1\dot{y}_2 + y_2^2)
+\]
+
+Solving for $u_2$:
+\[
+u_2 = \frac{\ddot{y}_2 + (\cos y_1)\dot{y}_2 + 3(y_1 - y_2) + (\cos y_1)^2 y_2 (\ddot{y}_1 + 3y_1\dot{y}_2 + y_2^2)}{1 + (\cos y_1)^2 y_2^2}
+\]
+
+This expression for $u_2$ can be substituted back into the original equation for $u_1$.
+
+\subsection*{Part B: Inverse Dynamics Control}
+
+For effective control, we transform the system equations to:
+\begin{align}
+\ddot{y}_1 &= -3y_1\dot{y}_2 - y_2^2 + u_1 + y_2 u_2 \\
+\ddot{y}_2 &= -(\cos y_1)\dot{y}_2 - 3(y_1 - y_2) + u_2 - (\cos y_1)^2 y_2 u_1
+\end{align}
+
+In matrix notation:
+\[
+\begin{bmatrix} \ddot{y}_1 \\ \ddot{y}_2 \end{bmatrix} = \begin{bmatrix} -3y_1\dot{y}_2 - y_2^2 \\ -(\cos y_1)\dot{y}_2 - 3(y_1 - y_2) \end{bmatrix} + \begin{bmatrix} 1 & y_2 \\ -(\cos y_1)^2 y_2 & 1 \end{bmatrix} \begin{bmatrix} u_1 \\ u_2 \end{bmatrix}
+\]
+
+For tracking control, we define virtual control inputs:
+\begin{align}
+\nu_1 &= \ddot{y}_{1d} + 2\zeta\omega_n (\dot{y}_{1d} - \dot{y}_1) + \omega_n^2 (y_{1d} - y_1) \\
+\nu_2 &= \ddot{y}_{2d} + 2\zeta\omega_n (\dot{y}_{2d} - \dot{y}_2) + \omega_n^2 (y_{2d} - y_2)
+\end{align}
+
+Setting $\begin{bmatrix} \nu_1 \\ \nu_2 \end{bmatrix} = \begin{bmatrix} \ddot{y}_1 \\ \ddot{y}_2 \end{bmatrix}$ and computing control inputs:
+\[
+\begin{bmatrix} u_1 \\ u_2 \end{bmatrix} = \frac{1}{1 + y_2^2 (\cos y_1)^2} \begin{bmatrix} 1 & -y_2 \\ (\cos y_1)^2 y_2 & 1 \end{bmatrix} \left( \begin{bmatrix} \nu_1 \\ \nu_2 \end{bmatrix} - \begin{bmatrix} -3y_1\dot{y}_2 - y_2^2 \\ -(\cos y_1)\dot{y}_2 - 3(y_1 - y_2) \end{bmatrix} \right)
+\]
+
+With $\omega_n = 10$ rad/s and $\zeta = 0.5$, this controller achieves desired tracking performance.
+
+\section{Exercise 3: Robotic Manipulator Dynamics}
+
+\textbf{Problem Statement:} Derive the equations of motion for a single-link robotic manipulator and design a critically damped controller.
+
+\subsection*{Energy Formulation}
+
+For a single-link manipulator, we analyze:
+\begin{itemize}[noitemsep]
+    \item Kinetic Energy: $T = \frac{1}{2}I\dot{\theta}^2$ 
+    \item Potential Energy: $V = \sum_{i} m_i g h_i$ (sum over all masses)
+    \item Lagrangian: $L = T - V$
+\end{itemize}
+
+Applying Euler-Lagrange formulation:
+\[
+\frac{d}{dt}\left(\frac{\partial L}{\partial \dot{\theta}}\right) - \frac{\partial L}{\partial \theta} = \tau
+\]
+
+This yields the standard form:
+\[
+\tau = I\ddot{\theta} + B\dot{\theta} + G(\theta)
+\]
+
+where $G(\theta)$ represents gravitational torque.
+
+\subsection*{Controller Design}
+
+We implement a PD controller:
+\[
+\tau = K_p (\theta_d - \theta) - K_d \dot{\theta}
+\]
+
+assuming zero desired velocity and acceleration. The closed-loop dynamics become:
+\[
+I\ddot{\theta} + K_d \dot{\theta} + K_p \theta = K_p \theta_d + G(\theta)
+\]
+
+The characteristic equation is:
+\[
+Is^2 + K_d s + K_p = 0
+\]
+
+For critically damped response ($\zeta = 1$) with $\omega_n = 4$ rad/s:
+\begin{align}
+K_p &= I\omega_n^2 = 16I \\
+K_d &= 2\zeta\omega_n I = 8I
+\end{align}
+
+\textbf{Final Controller:} $\tau = 16I(\theta_d - \theta) - 8I\dot{\theta}$
+
+\section{Exercise 4: Two-Link Manipulator Analysis}
+
+\textbf{Problem Statement:} Analyze a two-link manipulator performing circular motion and design a controller with disturbance rejection.
+
+\subsection*{Dynamic Model Derivation}
+
+The kinetic energy incorporates translational and rotational components:
+\begin{align}
+T &= \frac{1}{2}m l^2 \dot{\theta}_1^2 + \frac{1}{2}m (l^2 \dot{\theta}_1^2 + l^2 \dot{\theta}_2^2 + 2l^2 \dot{\theta}_1 \dot{\theta}_2 \cos \theta_2) \\
+&+ J_0 r^2(\dot{\theta}_1^2 + \dot{\theta}_2^2)
+\end{align}
+
+The potential energy accounts for gravitational effects:
+\[
+V = mgl\cos\theta_1 + mgl\cos(\theta_1 + \theta_2)
+\]
+
+Applying Lagrangian mechanics yields:
+\begin{align}
+\tau_1 &= (2ml^2 + J_0 r^2)\ddot{\theta}_1 + ml^2 \cos\theta_2 \ddot{\theta}_2 - ml^2 \sin\theta_2 \dot{\theta}_2^2 \\
+&- 2ml^2 \sin\theta_2 \dot{\theta}_1 \dot{\theta}_2 + mgl\sin\theta_1 + mgl\sin(\theta_1 + \theta_2) + B_0 r \dot{\theta}_1
+\end{align}
+
+\begin{align}
+\tau_2 &= ml^2 \cos\theta_2 \ddot{\theta}_1 + (ml^2 + J_0 r^2)\ddot{\theta}_2 + ml^2 \sin\theta_2 \dot{\theta}_1^2 \\
+&+ mgl\sin(\theta_1 + \theta_2) + B_0 r \dot{\theta}_2
+\end{align}
+
+\subsection*{Circular Trajectory Generation}
+
+For end-effector positions:
+\begin{align}
+x &= l\cos\theta_1 + l\cos(\theta_1 + \theta_2) \\
+y &= l\sin\theta_1 + l\sin(\theta_1 + \theta_2)
+\end{align}
+
+The desired circular trajectory with radius $R = \frac{3l}{2}$ and angular velocity $v = 10\pi$ rad/s:
+\begin{align}
+x &= \frac{3l}{2}\cos(10\pi t) \\
+y &= \frac{3l}{2}\sin(10\pi t)
+\end{align}
+
+\subsection*{PD Controller Design}
+
+For each joint, we implement:
+\[
+\tau_i = K_{p_i} (\theta_{id} - \theta_i) + K_{d_i} (\dot{\theta}_{id} - \dot{\theta}_i)
+\]
+
+With $\omega_n = 36$ rad/s and critical damping:
+\begin{align}
+K_{p1} &= 2592 ml^2 \\
+K_{d1} &= 144 ml^2 \\
+K_{p2} &= 1296 ml^2 \\
+K_{d2} &= 72 ml^2
+\end{align}
+
+\subsection*{Disturbance Analysis}
+
+With constant disturbance $\tau_d$ acting on joint 1, the steady-state error:
+\[
+e_{ss} = -\frac{\tau_d}{K_{p1}} = -\frac{\tau_d}{2592 ml^2}
+\]
+
+This demonstrates the controller's disturbance rejection capability.
+
+\section{Exercise 5: Forward Kinematics and Dynamics}
+
+\textbf{Problem Statement:} Develop transformation matrices, Jacobians, and inertia models for a two-link robotic manipulator.
+
+\subsection*{Transformation Matrices}
+
+For centers of mass locations with $q_1 = \theta_1$ and $q_2 = \theta_2$:
+
+\[
+{}^{0}_{C_1}T = \begin{bmatrix} 
+\cos\theta_1 & -\sin\theta_1 & 0 & \frac{L_1}{2} \cos\theta_1 \\ 
+\sin\theta_1 & \cos\theta_1 & 0 & \frac{L_1}{2} \sin\theta_1 \\ 
+0 & 0 & 1 & 0 \\ 
+0 & 0 & 0 & 1 
+\end{bmatrix}
+\]
+
+\[
+{}^{0}_{C_2}T = \begin{bmatrix} 
+\cos(\theta_1 + \theta_2) & -\sin(\theta_1 + \theta_2) & 0 & L_1 \cos\theta_1 + \frac{L_2}{2} \cos(\theta_1 + \theta_2) \\ 
+\sin(\theta_1 + \theta_2) & \cos(\theta_1 + \theta_2) & 0 & L_1 \sin\theta_1 + \frac{L_2}{2} \sin(\theta_1 + \theta_2) \\ 
+0 & 0 & 1 & 0 \\ 
+0 & 0 & 0 & 1 
+\end{bmatrix}
+\]
+
+\subsection*{Velocity Jacobians}
+
+Linear velocity Jacobians relate joint rates to linear velocities of centers of mass:
+
+\[
+{}^0 J_{v1} = \begin{bmatrix} 
+-\frac{L_1}{2} \sin\theta_1 & 0 \\ 
+\frac{L_1}{2} \cos\theta_1 & 0 \\ 
+0 & 0 
+\end{bmatrix}
+\]
+
+\[
+{}^0 J_{v2} = \begin{bmatrix} 
+-L_1 \sin\theta_1 - \frac{L_2}{2} \sin(\theta_1 + \theta_2) & -\frac{L_2}{2} \sin(\theta_1 + \theta_2) \\ 
+L_1 \cos\theta_1 + \frac{L_2}{2} \cos(\theta_1 + \theta_2) & \frac{L_2}{2} \cos(\theta_1 + \theta_2) \\ 
+0 & 0 
+\end{bmatrix}
+\]
+
+Angular velocity Jacobians map joint rates to angular velocities:
+
+\[
+{}^{c1} J_{\omega 1} = \begin{bmatrix} 
+0 & 0 \\ 
+0 & 0 \\ 
+1 & 0 
+\end{bmatrix}
+\]
+
+\[
+{}^{c2} J_{\omega 2} = \begin{bmatrix} 
+0 & 0 \\ 
+0 & 0 \\ 
+0 & 1 
+\end{bmatrix}
+\]
+
+\subsection*{Inertia Properties}
+
+For links with uniform density and square cross-section:
+
+\[
+I_{c1} = \frac{1}{12}m_1(L_1^2 + h^2) \begin{bmatrix} 
+1 & 0 & 0 \\ 
+0 & 1 & 0 \\ 
+0 & 0 & 1
+\end{bmatrix}
+\]
+
+\[
+I_{c2} = \frac{1}{12}m_2(L_2^2 + h^2) \begin{bmatrix} 
+1 & 0 & 0 \\ 
+0 & 1 & 0 \\ 
+0 & 0 & 1
+\end{bmatrix}
+\]
+
+\subsection*{Manipulator Inertia Matrix}
+
+The joint-space inertia matrix incorporates all mass effects:
+\begin{align}
+D(q) &= m_1 J_{v1}^T J_{v1} + m_2 J_{v2}^T J_{v2} + J_{\omega 1}^T I_{c1} J_{\omega 1} + J_{\omega 2}^T I_{c2} J_{\omega 2} \\
+&= \begin{bmatrix}
+    D_{11} & D_{12} \\
+    D_{21} & D_{22}
+\end{bmatrix}
+\end{align}
+
+Where:
+\begin{align}
+D_{11} &= \frac{1}{4}m_1 L_1^2 + m_2\left(L_1^2 + L_1 L_2 \cos\theta_2 + \frac{1}{4}L_2^2\right) + \frac{1}{12}m_1(L_1^2 + h^2) \\
+D_{12} &= D_{21} = m_2\left(\frac{1}{2}L_1 L_2 \cos\theta_2 + \frac{1}{4}L_2^2\right) \\
+D_{22} &= \frac{1}{4}m_2 L_2^2 + \frac{1}{12}m_2(L_2^2 + h^2)
+\end{align}
+
+\subsection*{Complete Dynamic Equations}
+
+The complete motion equations include Coriolis/centrifugal effects:
+\[
+C(q, \dot{q}) = \begin{bmatrix}
+    -m_2 L_1 L_2 \sin\theta_2 \dot{\theta}_2 & -m_2 L_1 L_2 \sin\theta_2 (\dot{\theta}_1 + \dot{\theta}_2) \\
+    m_2 L_1 L_2 \sin\theta_2 \dot{\theta}_1 & 0
+\end{bmatrix}
+\]
+
+And gravitational effects:
+\[
+G(q) = \begin{bmatrix}
+    \frac{1}{2} m_1 g L_1 \cos\theta_1 + m_2 g \left(L_1 \cos\theta_1 + \frac{1}{2} L_2 \cos(\theta_1 + \theta_2)\right) \\
+    \frac{1}{2} m_2 g L_2 \cos(\theta_1 + \theta_2)
+\end{bmatrix}
+\]
+
+\section{Exercise 6: Task-Space Control Design}
+
+\textbf{Problem Statement:} Develop task-space dynamics and controller for a two-link manipulator.
+
+\subsection*{Task-Space Dynamics Derivation}
+
+For end-effector kinematics:
+\begin{align}
+x &= l_1 \cos q_1 + l_2 \cos(q_1 + q_2) \\
+y &= l_1 \sin q_1 + l_2 \sin(q_1 + q_2)
+\end{align}
+
+The differential relationship is:
+\[
+\dot{x} = J(q) \dot{q}
+\]
+
+with Jacobian:
+\[
+J(q) = \begin{bmatrix} 
+-l_1 \sin q_1 - l_2 \sin(q_1 + q_2) & -l_2 \sin(q_1 + q_2) \\ 
+l_1 \cos q_1 + l_2 \cos(q_1 + q_2) & l_2 \cos(q_1 + q_2) 
+\end{bmatrix}
+\]
+
+Transforming joint-space dynamics to task-space:
+\[
+F = \Lambda(q) \ddot{x} + \mu(q, \dot{q}) + p(q)
+\]
+
+where:
+\begin{align}
+\Lambda(q) &= (J(q)^{-T} D(q) J(q)^{-1})^{-1} \\
+\mu(q, \dot{q}) &= \Lambda(q) J(q)^{-T} \left(C(q, \dot{q}) - D(q) J(q)^{-1} \dot{J}(q)\right) J(q)^{-1} \dot{x} \\
+p(q) &= \Lambda(q) J(q)^{-T} G(q)
+\end{align}
+
+\subsection*{Nonlinear Decoupling PD Controller}
+
+The task-space control law implements:
+\[
+F = \Lambda(q) (\ddot{x}_d + K_v \dot{e} + K_p e) + \mu(q, \dot{q}) + p(q)
+\]
+
+Converting to joint torques:
+\[
+\tau = J^{T}(q) F
+\]
+
+With critically damped response at $\omega_n = 36$ rad/s:
+\[
+K_p = \begin{bmatrix} 1296 & 0 \\ 0 & 1296 \end{bmatrix}, \quad 
+K_v = \begin{bmatrix} 72 & 0 \\ 0 & 72 \end{bmatrix}
+\]
+
+The final controller compensates for all nonlinear effects while ensuring precise trajectory tracking in the task space.
+
+\end{document}
