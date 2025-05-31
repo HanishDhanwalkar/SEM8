@@ -1,0 +1,39 @@
+Books: 
+1. AI 3E Foundations of computer Agents- David Poole & Alan Mackworth
+	[https://artint.info/3e/html/ArtInt3e.html]
+2. RL - Sutton Burto 
+	[http://incompleteideas.net/book/RLbook2020.pdf]
+3. Algorithms for RL - Csaba Szepesvari, Morgan & Claypool
+	[http://incompleteideas.net/book/RLbook2020.pdf]
+
+
+Research papers:
+1. On the Likelihood that One Unknown Probability Exceeds Another in View of the Evidence of Two Samples - William R. Thompson, 1933
+2. Some Studies in Machine Learning Using the Game of Checkers - Arthur L. Samuel, 1959
+3. Asymptotically Efficient Adaptive Allocation Rules - T. L. Lai and Herbert Robbins, 1985
+4. Self-Improving Reactive Agents Based On Reinforcement Learning, Planning and Teaching - Long-ji Lin, 1992
+5. Practical Issues in Temporal Difference Learning - Gerald Tesauro, 1992
+6. Simple Statistical Gradient-Following Algorithms for Connectionist Reinforcement Learning - Ronald J. Williams, 1992
+7. Average Reward Reinforcement Learning: Foundations, Algorithms, and Empirical Results -Sridhar Mahadevan, 1996
+Reinforcement Learning with Replacing Eligibility Traces- Satinder P. Singh and Richard S. Sutton, 1996
+Elevator Group Control Using Multiple Reinforcement Learning Agents - Robert H. Crites and Andrew G. Barto, 1998
+Learning to Trade via Direct Reinforcment  John Moody and Matthew Saffell, 2001
+Finite-time Analysis of the Multiarmed Bandit Problem - Peter Auer, Nicolò Cesa-Bianchi, and Paul Fischer, 2002
+Autonomous helicopter flight via reinforcement learning - Andrew Y. Ng, H. Jin Kim, Michael I. Jordan, and Shankar Sastry, 2003
+Tree-based Batch Mode Reinforcement Learning - Damien Ernst, Pierre Geurts, and Louis Wehenkel, 2005
+Bandit based Monte-Carlo Planning - Levente Kocsis and Csaba Szepesvári, 2006
+Batch Reinforcement Learning in a Complex Domain  - Shivaram Kalyanakrishnan and Peter Stone, 2007
+Adaptive Treatment of Epilepsy via Batch-mode Reinforcement Learning - Arthur Guez, Robert D. Vincent, Massimo Avoli, and Joelle Pineau, 2008
+Self-Optimizing Memory Controllers: A Reinforcement Learning Approach - Engin İpek, Onur Mutlu, José F. Martínez, and Rich Caruana, 2008
+Reinforcement learning of motor skills with policy gradients - Jan Peters and Stefan Schaal, 2008
+An Empirical Evaluation of Thompson Sampling - Olivier Chapelle and Lihong Li, 2011
+The KL-UCB Algorithm for Bounded Stochastic Bandits and Beyond - Aurélien Garivier and Olivier Cappé, 2011
+Learning Methods for Sequential Decision Making with Imperfect Representations - Shivaram Kalyanakrishnan, 2011
+On Optimizing Interdependent Skills: A Case Study in Simulated 3D Humanoid Robot Soccer - Daniel Urieli, Patrick MacAlpine, Shivaram Kalyanakrishnan, Yinon Bentor, and Peter Stone, 2011
+Thompson Sampling: An Asymptotically Optimal Finite-Time Analysis - Emilie Kaufmann, Nathaniel Korda, and Rémi Munos, 2012
+Human-level control through deep reinforcement learning - Volodymyr Mnih, Koray Kavukcuoglu, David Silver, Andrei A. Rusu, Joel Veness, Marc G. Bellemare, Alex Graves, Martin Riedmiller, Andreas K. Fidjeland, Georg Ostrovski, Stig Petersen, Charles Beattie, Amir Sadik, Ioannis Antonoglou, Helen King, Dharshan Kumaran, Daan Wierstra, Shane Legg, and Demis Hassabis, 2015
+Mastering the game of Go with deep neural networks and tree search - David Silver, Aja Huang, Chris J. Maddison, Arthur Guez, Laurent Sifre, George van den Driessche, Julian Schrittwieser, Ioannis Antonoglou, Veda Panneershelvam, Marc Lanctot, Sander Dieleman, Dominik Grewe, John Nham, Nal Kalchbrenner, Ilya Sutskever, Timothy Lillicrap, Madeleine Leach, Koray Kavukcuoglu, Thore Graepel, and Demis Hassabis, 2016
+Spatial interactions and optimal forest management on a fire-threatened landscape - Christopher J. Lauer, Claire A. Montgomery, and Thomas G. Dietterich, 2017
+A general reinforcement learning algorithm that masters chess, shogi, and Go through self-play - David Silver, Thomas Hubert, Julian Schrittwieser, Ioannis Antonoglou, Matthew Lai, Arthur Guez, Marc Lanctot, Laurent Sifre, Dharshan Kumaran, Thore Graepel, Timothy Lillicrap, Karen Simonyan, and Demis Hassabis, 2018.
+Optimising a Real-time Scheduler for Railway Lines using Policy Search - Rohit Prasad, Harshad Khadilkar, Shivaram Kalyanakrishnan, 2020
+Deep Reinforcement Learning for Autonomous Driving: A Survey - B Ravi Kiran, Ibrahim Sobh, Victor Talpaert, Patrick Mannion, Ahmad A. Al Sallab, Senthil Yogamani, Patrick Pérez, 2021
